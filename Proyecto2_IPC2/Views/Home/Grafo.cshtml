@@ -1,0 +1,17 @@
+@{
+    ViewData["Title"] = "Gráfica de Libros";
+    // Codificamos el texto DOT generado por tu C# para que sea seguro enviarlo en una URL
+    string dotCodificado = System.Web.HttpUtility.UrlEncode(ViewBag.DotCode);
+    string urlImagen = "https://quickchart.io/graphviz?graph=" + dotCodificado;
+}
+
+<div class="container mt-4 text-center">
+    <h2>Organización de Libros (Orden Ascendente por ISBN)</h2>
+    <hr />
+    <a asp-action="Index" class="btn btn-primary mb-3">Volver al Menú Principal</a>
+
+    <div id="grafo" style="border: 1px solid #ccc; padding: 20px; background: #fff; overflow-x: auto;">
+        <!-- Renderizamos la imagen directamente -->
+        <img src="@urlImagen" alt="Grafo de Libros" style="max-width: 100%; height: auto;" />
+    </div>
+</div>

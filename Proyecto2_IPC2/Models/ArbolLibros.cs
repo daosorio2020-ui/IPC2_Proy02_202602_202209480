@@ -40,4 +40,58 @@ public class ArbolLibros
        
         return BuscarRecursivo(nodo.Derecho, isbn);
     }
+
+    public NodoLibro ObtenerMinimo()
+{
+    if (Raiz == null) return null;
+    NodoLibro actual = Raiz;
+    while (actual.Izquierdo != null)
+        actual = actual.Izquierdo;
+    return actual;
+}
+
+public NodoLibro ObtenerMaximo()
+{
+    if (Raiz == null) return null;
+    NodoLibro actual = Raiz;
+    while (actual.Derecho != null)
+        actual = actual.Derecho;
+    return actual;
+}
+
+// Generar código Graphviz de los libros en orden ascendente (Recorrido In-Orden)
+public string GenerarGraphvizAscendente()
+{
+    if (Raiz == null) return "digraph G { nodo [label=\"Vacio\"]; }";
+
+    string dot = "digraph G {\n rankdir=LR;\n node [shape=box, style=filled, color=lightblue];\n";
+    string conexiones = "";
+    NodoLibro anterior = null;
+
+    // Función local para hacer el recorrido in-orden
+    void RecorridoInOrden(NodoLibro nodo)
+    {
+        if (nodo == null) return;
+       
+        RecorridoInOrden(nodo.Izquierdo);
+       
+        // Declarar el nodo
+        dot += $"n{nodo.ISBN} [label=\"ISBN: {nodo.ISBN}\\n{nodo.Titulo}\\n{nodo.Autor}\"];\n";
+       
+        // Conectar con el anterior para mostrar el orden ascendente
+        if (anterior != null)
+        {
+            conexiones += $"n{anterior.ISBN} -> n{nodo.ISBN};\n";
+        }
+        anterior = nodo;
+       
+        RecorridoInOrden(nodo.Derecho);
+    }
+
+    RecorridoInOrden(Raiz);
+    dot += conexiones + "}\n";
+   
+    return dot;
+}
+
 }

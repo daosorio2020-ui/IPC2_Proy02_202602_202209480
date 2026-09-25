@@ -1,8 +1,89 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model Proyecto2_IPC2.Models.GestorXML
+@{
+    ViewData["Title"] = "Catálogo de Librería";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container mt-4">
+    <h1 class="text-center">Sistema de Administración de Librería</h1>
+    <hr />
+
+    <!-- Notificaciones de éxito o error -->
+    @if (TempData["Mensaje"] != null) {
+        <div class="alert alert-success">@TempData["Mensaje"]</div>
+    }
+    @if (TempData["Error"] != null) {
+        <div class="alert alert-danger">@TempData["Error"]</div>
+    }
+
+    <div class="row mt-4">
+        <div class="col-md-6 border-right">
+            <h3>Inicialización y Carga</h3>
+           
+            <!-- Botón para inicializar sistema -->
+            <form asp-action="InicializarSistema" method="post" class="mb-4 mt-3">
+                <button type="submit" class="btn btn-warning w-100" onclick="return confirm('¿Seguro que deseas borrar todo el catálogo y empezar de cero?');">
+                    Inicializar Sistema (Vaciar)
+                                <!-- Botón de Ayuda -->
+            <a asp-action="Ayuda" class="btn btn-outline-info w-100 mb-4">Ver Sección de Ayuda</a>
+                </button>
+            </form>
+
+            <!-- Formulario para subir archivo XML -->
+            <div class="card card-body bg-light">
+                <form asp-action="CargarXML" method="post" enctype="multipart/form-data">
+                    <div class="form-group mb-3">
+                        <label for="archivoXML" class="font-weight-bold">Subir archivo XML de entrada:</label>
+                        <input type="file" name="archivoXML" id="archivoXML" class="form-control" accept=".xml" required />
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Cargar Archivo XML</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <h3>Estado del Sistema</h3>
+            <div class="alert alert-info mt-3">
+                <!-- Validación simple para ver si el nodo raíz del árbol tiene algo -->
+                @if (Model.CatalogoGlobal.Raiz != null)
+                {
+                    <p><strong>El catálogo contiene datos.</strong></p>
+                    <p>Puede proceder a realizar búsquedas y generar gráficas.</p>
+                }
+                else
+                {
+                    <p><strong>El catálogo está vacío.</strong></p>
+                    <p>Cargue un archivo XML o agregue categorías manualmente.</p>
+                }
+                            <!-- Requisito: Buscar libro por ISBN -->
+            <div class="card card-body bg-light mt-3">
+                <form asp-action="BuscarLibro" method="post">
+                    <div class="form-group mb-2">
+                        <label for="isbn" class="font-weight-bold">Buscar libro por ISBN:</label>
+                        <input type="number" name="isbn" id="isbn" class="form-control" required />
+                    </div>
+                    <button type="submit" class="btn btn-info w-100">Buscar</button>
+                </form>
+            </div>
+
+            <!-- Requisito: Mostrar libro con el menor y mayor ISBN -->
+            <div class="mt-3">
+                <form asp-action="ExtremosISBN" method="post">
+                    <button type="submit" class="btn btn-secondary w-100">Ver Menor y Mayor ISBN</button>
+                </form>
+            </div>
+
+            <!-- Requisito: Mostrar gráficamente los libros (Graphviz) -->
+            <div class="card card-body bg-light mt-3">
+                <form asp-action="GenerarGrafoCategoria" method="post">
+                    <div class="form-group mb-2">
+                        <label for="nombreCategoria" class="font-weight-bold">Graficar categoría:</label>
+                        <input type="text" name="nombreCategoria" id="nombreCategoria" class="form-control" placeholder="Dejar en blanco para catálogo global" />
+                    </div>
+                    <button type="submit" class="btn btn-success w-100">Generar Gráfica de Libros</button>
+                </form>
+            </div>
+
+            </div>
+        </div>
+    </div>
 </div>
